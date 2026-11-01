@@ -1,0 +1,10 @@
+tracepoint:net:netif_receive_skb
+/str(args->name) == "nkb1"/
+{
+  $skb = (struct sk_buff *)args->skbaddr;
+  $p = $skb->head + $skb->mac_header;
+  $eth = (struct ethhdr *)$p;
+  if ($eth->h_proto == 0x0008) {
+    printf("RX %-5s %rh\n", str(args->name), buf($p, 42));
+  }
+}
