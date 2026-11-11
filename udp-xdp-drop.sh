@@ -21,11 +21,11 @@ make -s -C $SRC host
 
 # 측정: 수신 처리율(μ)과 같은 속도, 4배 속도
 MU=$((1000000000 / SERVICE_NS))
-for m in 1 4; do
+for m in 1 2 4; do
     pps=$((MU * m))
-    echo "== $pps pps (${m} x μ) =="
+    echo "== $pps pps (${m} 배수) =="
     g sudo $DST/guest.sh start $SERVICE_NS $PORT
     taskset -c $CLIENT_CPU $SRC/client $IP $PORT $pps $DURATION > /dev/null
-    { echo "sec arrived_pps goodput_pps sock_drop_pps softirq_% user_%"
+    { echo "sec arrived_pps goodput_pps sock_drop_pps softirq_%"
       g sudo $DST/guest.sh stop; } | column -t
 done

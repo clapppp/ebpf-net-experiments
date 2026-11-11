@@ -20,4 +20,4 @@ netkit / veth 데이터 경로를 bpftrace와 eBPF로 관찰하는 실험.
 
 - 호스트: `isolcpus`로 코어 격리(SMT 형제 포함), `irqaffinity`로 IRQ 분리 후 재부팅
 - VM: Ubuntu cloud image, vCPU 2개를 격리 코어에 1:1 pin (`virsh vcpupin`), 메모리 4GiB
-- VM에 `gcc`, `make` 설치, 호스트 공개키를 VM에 등록 (`ssh-copy-id`)
+- VM에 `gcc`, `make`, `bpftrace` 설치, 호스트 공개키를 VM에 등록 (`ssh-copy-id`)
