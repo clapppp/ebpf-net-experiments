@@ -15,7 +15,7 @@ bpftrace ./tools/hdr.bt -c "$PING" | grep -E '^(TX|RX)'
 echo "===== C. netkit + redirect BPF ====="
 ./tools/clean-up.sh
 ./tools/netkit-setup.sh
-./nk_loader &
+./tools/nk_loader/nk_loader &
 LOADER=$!
 sleep 1
 bpftrace ./tools/hdr.bt -c "$PING" | grep -E '^(TX|RX)'

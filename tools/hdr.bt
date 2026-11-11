@@ -1,10 +1,33 @@
+config = { max_strlen = 128 }
+
+// 헤더가 알려주는 "다음 헤더" 정보를 따라가며 계층별로 출력한다.
+//   Ethernet.h_proto -> IP.protocol / IP.ihl -> TCP.doff
 tracepoint:net:netif_receive_skb
 /str(args->name) == "nkb1"/
 {
   $skb = (struct sk_buff *)args->skbaddr;
   $p = $skb->head + $skb->mac_header;
   $eth = (struct ethhdr *)$p;
-  if ($eth->h_proto == 0x0008) {
-    printf("RX %-5s %rh\n", str(args->name), buf($p, 42));
+
+  // L2: Ethernet (14B 고정)
+  if ($eth->h_proto == 0x0008) {   // IPv4 (네트워크 바이트 순서)
+    printf("RX %-5s ETH %rh\n", str(args->name), buf($p, 14));
+
+    // L3: IPv4 (길이 = ihl * 4, 옵션이 있으면 20B보다 길다)
+    $ip = $p + 14;
+    $iph = (struct iphdr *)$ip;
+    $ihl = $iph->ihl * 4;
+    printf("RX %-5s IP  %rh\n", str(args->name), buf($ip, $ihl));
+
+    // L4: IP.protocol이 가리키는 헤더
+    $l4 = $ip + $ihl;
+    if ($iph->protocol == 6) {          // TCP (길이 = doff * 4, 옵션 포함)
+      $tcph = (struct tcphdr *)$l4;
+      printf("RX %-5s TCP %rh\n", str(args->name), buf($l4, $tcph->doff * 4));
+    } else if ($iph->protocol == 17) {  // UDP (8B 고정)
+      printf("RX %-5s UDP %rh\n", str(args->name), buf($l4, 8));
+    } else if ($iph->protocol == 1) {   // ICMP (echo 헤더 8B)
+      printf("RX %-5s ICMP %rh\n", str(args->name), buf($l4, 8));
+    }
   }
 }

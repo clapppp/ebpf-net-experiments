@@ -11,7 +11,7 @@ bpftrace -e "$TRACE" -c "$PING"
 echo "===== BPF 있음 ====="
 ./tools/clean-up.sh
 ./tools/netkit-setup.sh
-./nk_loader &
+./tools/nk_loader/nk_loader &
 LOADER=$!
 sleep 1
 bpftrace -e "$TRACE" -c "$PING"

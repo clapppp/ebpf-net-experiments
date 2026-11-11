@@ -11,7 +11,7 @@ int main(void)
     int b = if_nametoindex("nkb0");
     if (!a || !b) { perror("if_nametoindex"); return 1; }
 
-    /* 2. open: BPF 오브젝트를 메모리에 읽기만 함 (커널에는rm 아직 안 올림) */
+    /* 2. open: BPF 오브젝트를 메모리에 읽기만 함 (커널에는 아직 안 올림) */
     struct nk_bpf *skel = nk_bpf__open();
     if (!skel) { fprintf(stderr, "open failed\n"); return 1; }
 

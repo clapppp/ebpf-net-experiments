@@ -40,4 +40,4 @@ sudo ip route add 10.0.0.2/32 dev nka0
 sudo ip route add 10.0.0.3/32 dev nkb0
 sudo sysctl -qw net.ipv4.ip_forward=1
 
-echo done
+echo "setup done (netkit)"
